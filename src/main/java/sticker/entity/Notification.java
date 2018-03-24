@@ -21,6 +21,8 @@ public class Notification {
     @Column(nullable = false)
     private String content;
     @Column(name = "notification_time", nullable = false)
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+    @DateTimeFormat(style = "dd.MM.yyyy HH:mm")
     private LocalDateTime notificationTime;
     @Column(nullable = false)
     private boolean done;
