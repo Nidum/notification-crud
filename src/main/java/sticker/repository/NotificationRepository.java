@@ -1,5 +1,7 @@
 package sticker.repository;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import sticker.entity.Notification;
@@ -17,33 +19,34 @@ import java.util.List;
 public class NotificationRepository {
 
     @Autowired
-    @PersistenceContext
-    private final EntityManager entityManager;
+    private SessionFactory sessionFactory;
 
-    public NotificationRepository(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    protected Session getCurrentSession(){
+        return sessionFactory.getCurrentSession();
     }
 
     public List<Notification> getAll() {
-        List list = entityManager.createQuery( "from Notification ", Notification.class ).getResultList();
+        List list = getCurrentSession().createQuery( "from Notification ", Notification.class ).getResultList();
         return list;
     }
 
     public Notification find(long id) {
-        return entityManager.find(Notification.class, id);
+        return getCurrentSession().find(Notification.class, id);
     }
 
     public void update(Notification notification){
-        entityManager.merge(notification);
-        entityManager.flush();
+        Session session = getCurrentSession();
+        session.merge(notification);
+        session.flush();
     }
 
     public void create(Notification notification){
-        entityManager.persist(notification);
+        getCurrentSession().persist(notification);
     }
 
     public void delete(long id){
-        Notification notification = entityManager.find(Notification.class, id);
-        entityManager.remove(notification);
+        Session session = getCurrentSession();
+        Notification notification = session.find(Notification.class, id);
+        session.remove(notification);
     }
 }

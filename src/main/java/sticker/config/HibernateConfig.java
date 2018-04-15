@@ -1,14 +1,19 @@
 package sticker.config;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * Created by Emiliia Nesterovych on 3/19/2018.
@@ -18,18 +23,47 @@ import javax.persistence.Persistence;
 public class HibernateConfig {
 
     @Bean
-    public EntityManagerFactory entityManagerFactory() {
-        return Persistence.createEntityManagerFactory("sticker");
+    public LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(restDataSource());
+        sessionFactory.setPackagesToScan("sticker.entity");
+        sessionFactory.setHibernateProperties(hibernateProperties());
+
+        return sessionFactory;
     }
 
     @Bean
-    public EntityManager entityManager() {
-        return entityManagerFactory().createEntityManager();
+    public DataSource restDataSource() {
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setUser("postgres");
+        dataSource.setPassword("M;J<2];u~#WtR8#d");
+        dataSource.setDatabaseName("notification");
+
+        return dataSource;
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new JpaTransactionManager(entityManagerFactory());
+    @Autowired
+    public HibernateTransactionManager transactionManager(
+            SessionFactory sessionFactory) {
+        HibernateTransactionManager txManager
+                = new HibernateTransactionManager();
+        txManager.setSessionFactory(sessionFactory);
+        return txManager;
     }
 
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    Properties hibernateProperties() {
+        return new Properties() {
+            {
+                setProperty("hibernate.hbm2ddl.auto", "update");
+                setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
+                setProperty("hibernate.globally_quoted_identifiers", "true");
+            }
+        };
+    }
 }
