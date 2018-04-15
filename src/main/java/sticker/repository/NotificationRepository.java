@@ -34,25 +34,16 @@ public class NotificationRepository {
     }
 
     public void update(Notification notification){
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         entityManager.merge(notification);
         entityManager.flush();
-        transaction.commit();
     }
 
     public void create(Notification notification){
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         entityManager.persist(notification);
-        transaction.commit();
     }
 
     public void delete(long id){
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         Notification notification = entityManager.find(Notification.class, id);
         entityManager.remove(notification);
-        transaction.commit();
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import sticker.entity.Notification;
 import sticker.repository.NotificationRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -21,28 +22,31 @@ public class NotificationService {
     }
 
     @GetMapping(value = "/notification/all")
-    List<Notification> getNotifications() {
+    public List<Notification> getNotifications() {
         List<Notification> allNotifications = notificationRepository.getAll();
         return allNotifications;
     }
 
     @GetMapping(value = "/notification/{id}")
-    Notification getNotification(@PathVariable("id") long id) {
+    public Notification getNotification(@PathVariable("id") long id) {
         return notificationRepository.find(id);
     }
 
+    @Transactional
     @PostMapping(value = "/notification/new")
-    void createNotification(@RequestBody Notification notification) {
+    public void createNotification(@RequestBody Notification notification) {
         notificationRepository.create(notification);
     }
 
+    @Transactional
     @PutMapping(value = "/notification")
-    void updateNotification(@RequestBody Notification notification) {
+    public void updateNotification(@RequestBody Notification notification) {
         notificationRepository.update(notification);
     }
 
+    @Transactional
     @DeleteMapping(value = "/notification/{id}")
-    void deleteNotification(@PathVariable("id") long id) {
+    public void deleteNotification(@PathVariable("id") long id) {
         notificationRepository.delete(id);
     }
 }
