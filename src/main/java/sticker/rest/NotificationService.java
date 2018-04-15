@@ -20,28 +20,28 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
-    @RequestMapping(value = "/notification/all")
+    @GetMapping(value = "/notification/all")
     List<Notification> getNotifications() {
         List<Notification> allNotifications = notificationRepository.getAll();
         return allNotifications;
     }
 
-    @RequestMapping(value = "/notification/{id}")
+    @GetMapping(value = "/notification/{id}")
     Notification getNotification(@PathVariable("id") long id) {
         return notificationRepository.find(id);
     }
 
-    @RequestMapping(value = "/notification/new", method = RequestMethod.POST)
+    @PostMapping(value = "/notification/new")
     void createNotification(@RequestBody Notification notification) {
         notificationRepository.create(notification);
     }
 
-    @RequestMapping(value = "/notification", method = RequestMethod.PUT)
+    @PutMapping(value = "/notification")
     void updateNotification(@RequestBody Notification notification) {
         notificationRepository.update(notification);
     }
 
-    @RequestMapping(value = "/notification/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/notification/{id}")
     void deleteNotification(@PathVariable("id") long id) {
         notificationRepository.delete(id);
     }
