@@ -3,7 +3,6 @@ package sticker.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.format.annotation.DateTimeFormat;
-import sticker.entity.json.LocalDateTimeDeserializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
